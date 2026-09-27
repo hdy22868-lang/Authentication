@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="error_no_internet">يرجى التحقق من اتصالك بالإنترنت.</string>
+    <string name="error_request_timeout">انتهت مهلة الطلب. يرجى المحاولة مرة أخرى.</string>
+    <string name="error_unauthorized">انتهت صلاحية الجلسة. يرجى تسجيل الدخول مجدداً.</string>
+    <string name="error_server">حدث خطأ في الخادم. حاول لاحقاً.</string>
+    <string name="error_unknown">حدث خطأ غير متوقع.</string>
+</resources>
