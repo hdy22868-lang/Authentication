@@ -62,6 +62,11 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
 
+    implementation("io.insert-koin:koin-android:3.5.6")
+
+
+    implementation("io.insert-koin:koin-androidx-compose:3.5.6")
+
     implementation("androidx.datastore:datastore-preferences:1.1.1")
 
     implementation("io.ktor:ktor-client-core:$ktorVersion")

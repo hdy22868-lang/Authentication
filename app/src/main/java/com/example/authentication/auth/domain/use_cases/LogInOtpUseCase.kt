@@ -8,7 +8,7 @@ import com.example.authentication.core.domain.Result
 class LogInOtpUseCase (
     private val repository: AuthRepository
 ) {
-    suspend operator fun invoke(phone: String ,otp: String): Result<AuthTokens, DataError> {
-        return repository.logInWithOtp(phone,otp)
+    suspend operator fun invoke(phone: String): Result<Unit, DataError> {
+        return repository.logInWithOtp(phone)
     }
 }

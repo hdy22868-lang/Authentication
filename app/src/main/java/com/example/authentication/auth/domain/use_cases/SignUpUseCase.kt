@@ -7,7 +7,7 @@ import com.example.authentication.core.domain.Result
 class SignUpUseCase(
     private val repository: AuthRepository
 ) {
-    suspend operator fun invoke(phone: String): Result<Unit, DataError>{
-        return repository.signUp(phone)
+    suspend operator fun invoke(phone: String,password: String , name:String): Result<Unit, DataError>{
+        return repository.signUp(phone,password,name)
     }
 }
