@@ -51,8 +51,6 @@ fun VerifyScreen(
         ) {
 
             Spacer(modifier = Modifier.height(40.dp))
-
-
             Column(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.Start
@@ -61,14 +59,12 @@ fun VerifyScreen(
                     text = stringResource(id = R.string.verify_title),
                     style = MaterialTheme.typography.headlineLarge.copy(
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1E293B)
                     )
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
                     text = stringResource(id = R.string.verify_subtitle, state.phoneNumber),
                     style = MaterialTheme.typography.bodyLarge,
-                    color = Color.Gray
                 )
             }
 

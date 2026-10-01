@@ -38,6 +38,7 @@ import com.example.authentication.auth.presentation.component.AuthTextField
 import com.example.authentication.auth.presentation.component.PhoneTextField
 import com.example.authentication.auth.presentation.login.logic.LoginAction
 import com.example.authentication.auth.presentation.login.logic.LoginState
+import com.example.authentication.ui.theme.LocalAuthAssets
 
 @Composable
 fun LoginScreen(
@@ -79,7 +80,7 @@ fun LoginScreen(
                 AuthHeader(
                     titleRes = R.string.login_title,
                     subtitleRes = R.string.login_subtitle,
-                    imageRes = R.drawable.login
+                    imageRes = LocalAuthAssets.current.loginImage
                 )
 
                 PhoneTextField(

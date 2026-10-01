@@ -38,6 +38,7 @@ import com.example.authentication.auth.presentation.component.AuthTextField
 import com.example.authentication.auth.presentation.component.PhoneTextField
 import com.example.authentication.auth.presentation.signup.logic.SignUpAction
 import com.example.authentication.auth.presentation.signup.logic.SignUpState
+import com.example.authentication.ui.theme.LocalAuthAssets
 
 @Composable
 fun SignUpScreen(
@@ -79,7 +80,7 @@ fun SignUpScreen(
                 AuthHeader(
                     titleRes = R.string.register_title,
                     subtitleRes = R.string.register_subtitle,
-                    imageRes = R.drawable.register
+                    imageRes = LocalAuthAssets.current.registerImage
                 )
 
                 AuthTextField(

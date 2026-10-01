@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import com.example.authentication.core.component.phoneNumber.CountryItem
 import com.example.authentication.core.component.phoneNumber.PhoneNumberValidator
 import com.example.authentication.R
+import com.example.authentication.core.component.phoneNumber.CountryPickerSheet
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -52,7 +53,7 @@ fun PhoneTextField(
 
     val context = LocalContext.current
     var showBottomSheet by remember { mutableStateOf(false) }
-    val sheetState = rememberModalBottomSheetState()
+
 
     val countries = remember {
         PhoneNumberValidator(context).getAllCountries()
@@ -63,7 +64,7 @@ fun PhoneTextField(
             value = value,
             onValueChange = onValueChange,
             label = { Text(label) },
-            placeholder = { Text(placeholder, color = Color.Gray) },
+            placeholder = { Text(placeholder, color = MaterialTheme.colorScheme.onSurfaceVariant) },
             isError = error != null,
             prefix = {
                 Row(
@@ -93,15 +94,16 @@ fun PhoneTextField(
                 Icon(
                     imageVector = Icons.Default.Phone,
                     contentDescription = null,
-                    tint = Color.Gray
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             },
             shape = RoundedCornerShape(16.dp),
             colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = MaterialTheme.colorScheme.primary,
-                unfocusedBorderColor = Color(0xFFF1F5F9),
-                focusedContainerColor = Color(0xFFF8FAFC),
-                unfocusedContainerColor = Color(0xFFF8FAFC)
+                unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
+                focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
             ),
             keyboardOptions = keyboardOptions,
             keyboardActions = keyboardActions,
@@ -121,60 +123,10 @@ fun PhoneTextField(
     }
 
     if (showBottomSheet) {
-        ModalBottomSheet(
-            onDismissRequest = { showBottomSheet = false },
-            sheetState = sheetState
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(24.dp)
-            ) {
-                Text(
-                    text = stringResource(R.string.select_country),
-                    style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.padding(bottom = 16.dp)
-                )
-
-                LazyColumn(
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(350.dp)
-                ) {
-                    items(countries) { country ->
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable {
-                                    onCountryCodeSelected(country)
-                                    showBottomSheet = false
-                                }
-                                .padding(vertical = 12.dp, horizontal = 8.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Text(
-                                    text = country.flagEmoji,
-                                    style = MaterialTheme.typography.titleMedium,
-                                    modifier = Modifier.padding(end = 12.dp)
-                                )
-                                Text(
-                                    text = country.name,
-                                    style = MaterialTheme.typography.bodyLarge
-                                )
-                            }
-                            Text(
-                                text = country.callingCode,
-                                style = MaterialTheme.typography.bodyLarge,
-                                color = MaterialTheme.colorScheme.primary
-                            )
-                        }
-                        HorizontalDivider(color = Color.LightGray.copy(alpha = 0.5f))
-                    }
-                }
-            }
-        }
+        CountryPickerSheet(
+            countries = countries,
+            onCountrySelected = onCountryCodeSelected,
+            onDismiss = { showBottomSheet = false }
+        )
     }
 }

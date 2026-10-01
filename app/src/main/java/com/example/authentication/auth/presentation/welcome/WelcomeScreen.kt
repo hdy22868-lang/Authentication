@@ -23,20 +23,16 @@ import com.example.authentication.auth.presentation.component.AuthBackground
 import com.example.authentication.auth.presentation.component.AuthFooter
 import com.example.authentication.core.component.language.Language
 import com.example.authentication.core.component.language.LanguageManager
+import com.example.authentication.core.component.language.LanguageSelector
+import com.example.authentication.ui.theme.LocalAuthAssets
 
 @Composable
 fun WelcomeScreen(
     onSignUpClick: () -> Unit,
     onSignInClick: () -> Unit,
-    avatarImageRes: Int = R.drawable.hello_sign,
+    avatarImageRes: Int? = LocalAuthAssets.current.welcomeImage,
     modifier: Modifier = Modifier
 ) {
-
-    var showLanguageMenu by remember { mutableStateOf(false) }
-
-    val currentLanguage = remember { LanguageManager.currentLanguage }
-    val currentLanguageText = if (currentLanguage == Language.ARABIC) "العربية" else "English"
-
     AuthBackground {
     Box(
         modifier = modifier.fillMaxSize()
@@ -49,78 +45,33 @@ fun WelcomeScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            Box(
-                modifier = Modifier.padding(top = 16.dp),
-                contentAlignment = Alignment.TopCenter
-            ) {
-                Surface(
-                    shape = RoundedCornerShape(16.dp),
-                    color = Color(0xFFF3F1F5),
-                    modifier = Modifier.clickable { showLanguageMenu = true }
-                ) {
-                    Row(
-                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = currentLanguageText,
-                            style = MaterialTheme.typography.bodyMedium.copy(color = Color(0xFF1E293B))
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Icon(
-                            imageVector = Icons.Default.ArrowDropDown,
-                            contentDescription = "Select Language",
-                            tint = Color(0xFF1E293B)
-                        )
-                    }
-                }
-
-                // القائمة المنسدلة للغات
-                DropdownMenu(
-                    expanded = showLanguageMenu,
-                    onDismissRequest = { showLanguageMenu = false }
-                ) {
-                    DropdownMenuItem(
-                        text = { Text("English") },
-                        onClick = {
-                            showLanguageMenu = false
-                            LanguageManager.switchLanguage("en")
-                        }
-                    )
-                    DropdownMenuItem(
-                        text = { Text("العربية") },
-                        onClick = {
-                            showLanguageMenu = false
-                            LanguageManager.switchLanguage("ar")
-                        }
-                    )
-                }
-            }
+            LanguageSelector(modifier = Modifier.padding(top = 16.dp))
 
             Spacer(modifier = Modifier.weight(1f))
 
-            Surface(
-                shape = CircleShape,
-                color = Color.White,
-                modifier = Modifier.size(120.dp),
-                shadowElevation = 2.dp
-            ) {
-                Image(
-                    painter = painterResource(id = avatarImageRes),
-                    contentDescription = "User Avatar",
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(24.dp)
-                )
-            }
+            if (avatarImageRes != null) {
+                Surface(
+                    shape = CircleShape,
+                    color = MaterialTheme.colorScheme.surface,
+                    modifier = Modifier.size(120.dp),
+                    shadowElevation = 2.dp
+                ) {
+                    Image(
+                        painter = painterResource(id = avatarImageRes),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
 
-            Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(24.dp))
+            }
 
             Text(
                 text = stringResource(R.string.welcome),
                 style = MaterialTheme.typography.headlineMedium.copy(
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF161616)
+
                 )
             )
 
@@ -129,7 +80,7 @@ fun WelcomeScreen(
             Text(
                 text = stringResource(R.string.welcome_subtitle),
                 style = MaterialTheme.typography.bodyLarge,
-                color = Color.DarkGray,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(horizontal = 16.dp)
             )

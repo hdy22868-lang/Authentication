@@ -28,14 +28,12 @@ fun AuthFooter(
         Text(
             text = promptText,
             style = MaterialTheme.typography.bodyMedium,
-            color = Color.Gray
         )
         Spacer(modifier = Modifier.width(4.dp))
         Text(
             text = actionText,
             style = MaterialTheme.typography.bodyMedium.copy(
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E293B)
             ),
             modifier = Modifier.clickable { onActionClick() }
         )

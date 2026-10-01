@@ -42,4 +42,7 @@
     <string name="welcome_subtitle">قم بتسجيل الدخول أو إنشاء حساب للمتابعة.</string>
     <string name="logout">تسجيل الخروج</string>
     <string name="home_title">الرئيسية</string>
+    <string name="select_language">اختر اللغة</string>
+    <string name="search_country">ابحث عن دولة أو مقدمة</string>
+    <string name="no_results">لا توجد نتائج</string>
 </resources>

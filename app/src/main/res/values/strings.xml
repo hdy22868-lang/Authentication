@@ -43,4 +43,7 @@
     <string name="welcome_subtitle">Sign in or create an account to continue.</string>
     <string name="logout">logout</string>
     <string name="home_title">Home</string>
+    <string name="select_language">Select language</string>
+    <string name="search_country">Search country or code</string>
+    <string name="no_results">No results found</string>
 </resources>
