@@ -3,7 +3,9 @@ package com.example.authentication.auth.presentation.signup.logic
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.authentication.auth.domain.use_cases.SignUpUseCase
+import com.example.authentication.core.component.localization.UiText
 import com.example.authentication.core.component.localization.toUiText
+import com.example.authentication.core.component.phoneNumber.PhoneNumberValidator
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,8 +16,10 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class SignUpViewModel(
-    private val signUpUseCase: SignUpUseCase
+    private val signUpUseCase: SignUpUseCase,
+    private val phoneNumberValidator: PhoneNumberValidator
 ): ViewModel(){
+
     private val _state = MutableStateFlow(SignUpState())
     val state: StateFlow<SignUpState> = _state.asStateFlow()
 
@@ -37,17 +41,32 @@ class SignUpViewModel(
                 signUp()
             }
             is SignUpAction.OnCountryCodeChanged -> {
-                _state.update { it.copy(countryCode = action.callingCode) }
+                _state.update { it.copy(
+                    countryCode = action.callingCode,
+                    isoCode = action.isoCode) }
             }
         }
     }
 
+    private fun validatedPhone(): String? {
+        val current = _state.value
+        val e164 = phoneNumberValidator.formatToE164(current.phoneNumber, current.isoCode)
+        if (e164 == null) {
+            _state.update {
+                it.copy(phoneError = UiText.StringResource(com.example.authentication.R.string.error_invalid_phone))
+            }
+        }
+        return e164
+    }
+
     private fun signUp() {
+        val validPhone = validatedPhone() ?: return
         viewModelScope.launch {
-            _state.update { it.copy(isLoading = true, phoneNumber ="") }
+
+            _state.update { it.copy(isLoading = true) }
 
             val result = signUpUseCase(
-                phone = _state.value.phoneNumber,
+                phone = validPhone,
                 password = _state.value.password,
                 name = _state.value.fullName
             )
@@ -56,7 +75,7 @@ class SignUpViewModel(
 
             when (result) {
                 is Result.Success -> {
-                    _uiEvent.send(SignUpUiEvent.NavigateToVerify(_state.value.phoneNumber))
+                    _uiEvent.send(SignUpUiEvent.NavigateToVerify(validPhone))
                 }
                 is Result.Error -> {
                     _state.update { it.copy(phoneError = result.error.toUiText()) }

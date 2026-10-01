@@ -49,8 +49,7 @@ fun AuthTextField(
             focusedContainerColor = Color(0xFFF8FAFC),
             unfocusedContainerColor = Color(0xFFF8FAFC)
         ),
-        modifier = modifier.semantics {
-            contentType = ContentType.Password
-        }
+        modifier = modifier
+
     )
 }

@@ -107,9 +107,7 @@ fun PhoneTextField(
             keyboardActions = keyboardActions,
             singleLine = true,
             modifier = modifier.fillMaxWidth()
-                .semantics {
-                contentType = ContentType.PhoneNumber
-            }
+
         )
     }
 

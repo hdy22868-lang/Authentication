@@ -1,5 +1,6 @@
 package com.example.authentication.auth.data.repository
 
+import android.util.Log
 import com.example.authentication.auth.domain.model.AuthTokens
 import com.example.authentication.auth.domain.model.User
 import com.example.authentication.auth.domain.repository.AuthRepository
@@ -10,8 +11,9 @@ class FakeAuthRepositoryImpl : AuthRepository {
 
     private var loggedIn = false
     private val usersMemory = mutableMapOf<String, String>(
-        "+9647829155438" to "12345"
+        "7829155438" to "hhhhhh"
     )
+    private val otpsMemory = mutableMapOf<String, String>()
 
     override suspend fun signUp(
         phone: String,
@@ -19,6 +21,10 @@ class FakeAuthRepositoryImpl : AuthRepository {
         name: String
     ): Result<Unit, DataError> {
         usersMemory[phone] = password
+        val fakeOtp = "123456"
+        otpsMemory[phone] = fakeOtp
+
+        Log.d("FakeOTP", "تم إرسال رمز التحقق: $fakeOtp إلى الرقم $phone")
         return Result.Success(Unit)
     }
 
@@ -26,10 +32,18 @@ class FakeAuthRepositoryImpl : AuthRepository {
         phone: String,
         otp: String
     ): Result<Pair<User, AuthTokens>, DataError> {
-        val mockUser = User(id = 1, phoneNumber = phone, isVerified = true)
-        val mockTokens = AuthTokens(accessToken = "fake_access_token", refreshToken = "fake_refresh_token")
+        val savedOtp = otpsMemory[phone]
+
+        if (savedOtp != null && savedOtp == otp) {
+            val mockUser = User(id = 1, phoneNumber = phone, isVerified = true)
+            val mockTokens = AuthTokens(accessToken = "fake_access_token", refreshToken = "fake_refresh_token")
+            loggedIn = true
+            return Result.Success(Pair(mockUser, mockTokens))
+        } else {
+            // في حال إدخال كود خاطئ
+            return Result.Error(DataError.Network.UNAUTHORIZED)
+        }
         loggedIn = true
-        return Result.Success(Pair(mockUser, mockTokens))
     }
 
     override suspend fun logInWithPassword(
@@ -47,14 +61,25 @@ class FakeAuthRepositoryImpl : AuthRepository {
     }
 
     override suspend fun logInWithOtp(phone: String): Result<Unit, DataError> {
-        return if (usersMemory.containsKey(phone)) {
-            Result.Success(Unit)
-        } else {
-            Result.Error(DataError.Network.UNAUTHORIZED)
+        if (!usersMemory.containsKey(phone)) {
+            usersMemory[phone] = "12345" // باسوورد وهمي احتياطي
         }
+
+        // توليد كود الـ OTP
+        val fakeOtp = "123456"
+        otpsMemory[phone] = fakeOtp
+
+        // طباعة الكود حتى تشوفه بالـ Logcat
+        Log.d("FakeOTP", "تم إرسال رمز التحقق: $fakeOtp إلى الرقم $phone")
+
+        // إرجاع نجاح حتى الـ ViewModel ينقلك لصفحة الـ OTP أو الـ Reset Password
+        return Result.Success(Unit)
     }
 
     override suspend fun resentOtp(phone: String): Result<Unit, DataError> {
+        val fakeOtp = "123456"
+        otpsMemory[phone] = fakeOtp
+        Log.d("FakeOTP", "تم إعادة إرسال رمز التحقق: $fakeOtp إلى الرقم $phone")
         return Result.Success(Unit)
     }
 

@@ -14,6 +14,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.autofill.ContentType
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
@@ -21,6 +22,8 @@ import androidx.compose.ui.platform.LocalAutofillManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentType
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -101,6 +104,8 @@ fun LoginScreen(
                     keyboardActions = KeyboardActions(
                         onNext = { focusManager.moveFocus(FocusDirection.Down) }
                     ),
+                    modifier = Modifier.fillMaxWidth()
+                        .semantics { contentType = ContentType.PhoneNumber },
                 )
 
 
@@ -109,7 +114,8 @@ fun LoginScreen(
                     onValueChange = { onAction(LoginAction.OnPasswordChanged(it)) },
                     placeholder = stringResource(R.string.enter_your_password),
                     leadingIcon = Icons.Default.Lock,
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth()
+                        .semantics { contentType = ContentType.Password },
                     trailingIcon = {
                         val image =
                             if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff

@@ -5,11 +5,14 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.*
+import androidx.compose.ui.platform.LocalAutofillManager
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import com.example.authentication.R
 import com.example.authentication.auth.presentation.signup.logic.SignUpUiEvent
 import com.example.authentication.auth.presentation.signup.logic.SignUpViewModel
+import kotlinx.coroutines.delay
 
 @Composable
 fun SignUpScreenRoot(
@@ -20,11 +23,16 @@ fun SignUpScreenRoot(
     val context = LocalContext.current
     val state by viewModel.state.collectAsState()
     var showUserExistsDialog by remember { mutableStateOf(false) }
+    val autofillManager = LocalAutofillManager.current
+    val focusManager = LocalFocusManager.current
 
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
             when (event) {
                 is SignUpUiEvent.NavigateToVerify -> {
+                    autofillManager?.commit()
+                    focusManager.clearFocus()
+                    delay(300)
                     onNavigateToOtp(event.phoneNumber)
                 }
                 is SignUpUiEvent.ShowUserAlreadyExistsDialog -> {
