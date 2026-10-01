@@ -62,8 +62,11 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
 
-    implementation("io.insert-koin:koin-android:3.5.6")
+    implementation("androidx.compose.material:material-icons-extended:1.6.8")
 
+    implementation("androidx.navigation:navigation-compose:2.8.0")
+
+    implementation("io.insert-koin:koin-android:3.5.6")
 
     implementation("io.insert-koin:koin-androidx-compose:3.5.6")
 

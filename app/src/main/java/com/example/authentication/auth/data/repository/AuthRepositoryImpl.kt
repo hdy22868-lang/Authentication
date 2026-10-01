@@ -12,20 +12,20 @@ import com.example.authentication.auth.data.remote.dto.request.VerifyOtpRequestD
 import com.example.authentication.auth.domain.model.AuthTokens
 import com.example.authentication.auth.domain.model.User
 import com.example.authentication.auth.domain.repository.AuthRepository
+import com.example.authentication.core.data.networking.safeCall
 import com.example.authentication.core.domain.DataError
 import com.example.authentication.core.domain.Result
-
-
 class AuthRepositoryImpl(
     private val remoteDataSource: AuthRemoteDataSource,
     private val authPreferences: AuthPreferences
 ) : AuthRepository {
+
     override suspend fun signUp(
         phone: String,
         password: String,
         name: String
     ): Result<Unit, DataError> {
-        return try {
+        return safeCall {
             remoteDataSource.signUp(
                 SignUpRequestDto(
                     phoneNumber = phone,
@@ -33,9 +33,6 @@ class AuthRepositoryImpl(
                     name = name
                 )
             )
-            Result.Success(Unit)
-        }catch (e: Exception){
-            Result.Error(DataError.Network.SERVER_ERROR)
         }
     }
 
@@ -43,15 +40,14 @@ class AuthRepositoryImpl(
         phone: String,
         otp: String
     ): Result<Pair<User, AuthTokens>, DataError> {
-        return try {
-            val response = remoteDataSource.verifyOtp(VerifyOtpRequestDto(phoneNumber = phone,
-                otpCode = otp))
-            val accessToken = response.accessToken ?:""
+        return safeCall {
+            val response = remoteDataSource.verifyOtp(
+                VerifyOtpRequestDto(phoneNumber = phone, otpCode = otp)
+            )
+            val accessToken = response.accessToken ?: ""
             val refreshToken = response.refreshToken ?: ""
-            authPreferences.saveTokens(accessToken,refreshToken)
-            Result.Success(Pair(response.toUser(),response.toAuthToken()))
-        }catch (e: Exception){
-            Result.Error(DataError.Network.SERVER_ERROR)
+            authPreferences.saveTokens(accessToken, refreshToken)
+            Pair(response.toUser(), response.toAuthToken())
         }
     }
 
@@ -59,43 +55,34 @@ class AuthRepositoryImpl(
         phone: String,
         password: String
     ): Result<Pair<User, AuthTokens>, DataError> {
-        return try {
-            val response = remoteDataSource.loginWithPassword(LoginPasswordRequestDto(phoneNumber = phone, password = password))
+        return safeCall {
+            val response = remoteDataSource.loginWithPassword(
+                LoginPasswordRequestDto(phoneNumber = phone, password = password)
+            )
 
             val accessToken = response.accessToken ?: ""
             val refreshToken = response.refreshToken ?: ""
             authPreferences.saveTokens(accessToken, refreshToken)
 
-            Result.Success(Pair(response.toUser(), response.toAuthToken()))
-        } catch (e: Exception) {
-            Result.Error(DataError.Network.SERVER_ERROR)
+            Pair(response.toUser(), response.toAuthToken())
         }
     }
 
     override suspend fun logInWithOtp(phone: String): Result<Unit, DataError> {
-        return try {
+        return safeCall {
             remoteDataSource.loginWithOtp(LoginOtpRequestDto(phoneNumber = phone))
-            Result.Success(Unit)
-        } catch (e: Exception) {
-            Result.Error(DataError.Network.SERVER_ERROR)
         }
     }
 
     override suspend fun resentOtp(phone: String): Result<Unit, DataError> {
-        return try {
+        return safeCall {
             remoteDataSource.loginWithOtp(LoginOtpRequestDto(phoneNumber = phone))
-            Result.Success(Unit)
-        } catch (e: Exception) {
-            Result.Error(DataError.Network.SERVER_ERROR)
         }
     }
 
     override suspend fun logout(): Result<Unit, DataError> {
-        return try {
+        return safeCall {
             authPreferences.clearTokens()
-            Result.Success(Unit)
-        } catch (e: Exception) {
-            Result.Error(DataError.Local.UNKNOWN)
         }
     }
 
@@ -103,13 +90,10 @@ class AuthRepositoryImpl(
         phone: String,
         newPassword: String
     ): Result<Unit, DataError> {
-        return try {
-            remoteDataSource.resetPassword(ResetPasswordRequestDto(phoneNumber = phone, newPassword = newPassword))
-            Result.Success(Unit)
-        } catch (e: Exception) {
-            Result.Error(DataError.Network.SERVER_ERROR)
+        return safeCall {
+            remoteDataSource.resetPassword(
+                ResetPasswordRequestDto(phoneNumber = phone, newPassword = newPassword)
+            )
         }
     }
-
-
 }

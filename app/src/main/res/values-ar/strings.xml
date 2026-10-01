@@ -5,4 +5,17 @@
     <string name="error_unauthorized">انتهت صلاحية الجلسة. يرجى تسجيل الدخول مجدداً.</string>
     <string name="error_server">حدث خطأ في الخادم. حاول لاحقاً.</string>
     <string name="error_unknown">حدث خطأ غير متوقع.</string>
+    <string name="not_match">كلمتا السر غير متطابقتان</string>
+    <string name="login_title">تسجيل الدخول</string>
+    <string name="login_subtitle">يرجى تسجيل الدخول للمتابعة.</string>
+    <string name="phone_number">رقم الهاتف</string>
+    <string name="enter_phone_number">أدخل رقم الهاتف</string>
+    <string name="password">كلمة المرور</string>
+    <string name="enter_your_password">أدخل كلمة المرور</string>
+    <string name="forget_password">هل نسيت كلمة المرور؟</string>
+    <string name="sign_in">تسجيل الدخول</string>
+    <string name="don_t_have_an_account">ليس لديك حساب؟ </string>
+    <string name="sign_up">إنشاء حساب</string>
+    <string name="select_country">اختر الدولة</string>
+    <string name="select_country_desc">اختر الدولة</string>
 </resources>
