@@ -41,4 +41,6 @@
     <string name="update_password">Update Password</string>
     <string name="welcome">Welcome</string>
     <string name="welcome_subtitle">Sign in or create an account to continue.</string>
+    <string name="logout">logout</string>
+    <string name="home_title">Home</string>
 </resources>

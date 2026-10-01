@@ -19,7 +19,7 @@ class MyApp : Application() {
             androidContext(this@MyApp)
 
             // نضع الموديول هنا (نستطيع التبديل بين fakeAuthModule و authModule لاحقاً بكل سهولة)
-            modules(coreModule,fakeAuthModule)
+            modules(coreModule,fakeAuthModule,appModule)
         }
     }
 }

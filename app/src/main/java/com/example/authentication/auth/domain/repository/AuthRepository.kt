@@ -6,6 +6,7 @@ import com.example.authentication.core.domain.DataError
 import com.example.authentication.core.domain.Result
 
 interface AuthRepository {
+    suspend fun isLoggedIn(): Boolean
     suspend fun signUp(phone: String, password: String, name: String): Result<Unit, DataError>
     suspend fun verify(phone : String , otp : String): Result<Pair<User, AuthTokens>, DataError>
 

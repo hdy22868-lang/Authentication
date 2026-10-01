@@ -8,6 +8,7 @@ import com.example.authentication.core.domain.Result
 
 class FakeAuthRepositoryImpl : AuthRepository {
 
+    private var loggedIn = false
     private val usersMemory = mutableMapOf<String, String>(
         "+9647829155438" to "12345"
     )
@@ -27,6 +28,7 @@ class FakeAuthRepositoryImpl : AuthRepository {
     ): Result<Pair<User, AuthTokens>, DataError> {
         val mockUser = User(id = 1, phoneNumber = phone, isVerified = true)
         val mockTokens = AuthTokens(accessToken = "fake_access_token", refreshToken = "fake_refresh_token")
+        loggedIn = true
         return Result.Success(Pair(mockUser, mockTokens))
     }
 
@@ -40,6 +42,7 @@ class FakeAuthRepositoryImpl : AuthRepository {
         }
         val mockUser = User(id = 1, phoneNumber = phone, isVerified = true)
         val mockTokens = AuthTokens(accessToken = "fake_access_token", refreshToken = "fake_refresh_token")
+        loggedIn = true
         return Result.Success(Pair(mockUser, mockTokens))
     }
 
@@ -64,6 +67,9 @@ class FakeAuthRepositoryImpl : AuthRepository {
     }
 
     override suspend fun logout(): Result<Unit, DataError> {
+        loggedIn = false
         return Result.Success(Unit)
     }
+
+    override suspend fun isLoggedIn(): Boolean = loggedIn
 }

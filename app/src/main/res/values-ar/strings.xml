@@ -40,4 +40,6 @@
     <string name="update_password">تحديث كلمة المرور</string>
     <string name="welcome">مرحباً</string>
     <string name="welcome_subtitle">قم بتسجيل الدخول أو إنشاء حساب للمتابعة.</string>
+    <string name="logout">تسجيل الخروج</string>
+    <string name="home_title">الرئيسية</string>
 </resources>

@@ -15,6 +15,7 @@ import com.example.authentication.auth.domain.repository.AuthRepository
 import com.example.authentication.core.data.networking.safeCall
 import com.example.authentication.core.domain.DataError
 import com.example.authentication.core.domain.Result
+import kotlinx.coroutines.flow.first
 class AuthRepositoryImpl(
     private val remoteDataSource: AuthRemoteDataSource,
     private val authPreferences: AuthPreferences
@@ -96,5 +97,8 @@ class AuthRepositoryImpl(
                 ResetPasswordRequestDto(phoneNumber = phone, newPassword = newPassword)
             )
         }
+    }
+    override suspend fun isLoggedIn(): Boolean {
+        return !authPreferences.accessTokenFlow.first().isNullOrBlank()
     }
 }

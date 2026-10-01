@@ -18,13 +18,17 @@ import com.example.authentication.auth.presentation.reset_password.logic.ResetPa
 import com.example.authentication.auth.presentation.welcome.ui.WelcomeScreen
 import com.example.authentication.core.component.navigateAndClearSafe
 import com.example.authentication.core.component.navigateSafe
+import com.example.authentication.home.HomeScreenRoot
+import com.example.authentication.home.HomeViewModel
 
 @Composable
-fun AuthNavGraph(navController: NavHostController) {
+fun AuthNavGraph(
+    navController: NavHostController,
+    startDestination: AuthRoute = AuthRoute.Welcome) {
     AuthBackground {
         NavHost(
             navController = navController,
-            startDestination = AuthRoute.Welcome
+            startDestination = startDestination
         ) {
 
             composable<AuthRoute.Welcome> {
@@ -45,7 +49,11 @@ fun AuthNavGraph(navController: NavHostController) {
                         )
                     },
                     onNavigateToSignUp = { navController.navigateSafe(AuthRoute.SignUp) },
-                    onNavigateToVerify = {navController.navigateSafe(AuthRoute.Verify)}
+                    onNavigateToVerify = { phone ->
+                        navController.navigateSafe(
+                            AuthRoute.Verify(phoneNumber = phone, isResetFlow = true)
+                        )
+                    }
                 )
             }
 
@@ -102,7 +110,15 @@ fun AuthNavGraph(navController: NavHostController) {
 
 
             composable<AuthRoute.Home> {
-                ("TODO")
+                val viewModel = koinViewModel<HomeViewModel>()
+                HomeScreenRoot(
+                    viewModel = viewModel,
+                    onLoggedOut = {
+                        navController.navigateAndClearSafe<AuthRoute.Home>(
+                            route = AuthRoute.Welcome
+                        )
+                    }
+                )
             }
         }
     }
