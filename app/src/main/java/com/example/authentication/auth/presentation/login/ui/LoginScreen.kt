@@ -1,6 +1,5 @@
 package com.example.authentication.auth.presentation.login.ui
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -15,7 +14,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.autofill.ContentType
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
@@ -103,7 +101,6 @@ fun LoginScreen(
                     keyboardActions = KeyboardActions(
                         onNext = { focusManager.moveFocus(FocusDirection.Down) }
                     ),
-                    contentType = ContentType.PhoneNumber
                 )
 
 
@@ -112,6 +109,7 @@ fun LoginScreen(
                     onValueChange = { onAction(LoginAction.OnPasswordChanged(it)) },
                     placeholder = stringResource(R.string.enter_your_password),
                     leadingIcon = Icons.Default.Lock,
+                    modifier = Modifier.fillMaxWidth(),
                     trailingIcon = {
                         val image =
                             if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff
@@ -120,7 +118,6 @@ fun LoginScreen(
                         }
                     },
                     visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                    modifier = Modifier.fillMaxWidth()
                 )
 
                 Box(

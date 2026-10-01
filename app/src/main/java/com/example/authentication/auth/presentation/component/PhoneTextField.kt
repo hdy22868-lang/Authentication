@@ -18,9 +18,18 @@ import androidx.compose.ui.autofill.ContentType
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.autofill.AutofillNode
+import androidx.compose.ui.autofill.AutofillType
+import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.layout.boundsInWindow
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalAutofillManager
+import androidx.compose.ui.platform.LocalAutofillTree
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentType
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.LayoutDirection
 import com.example.authentication.core.component.phoneNumber.CountryItem
 import com.example.authentication.core.component.phoneNumber.PhoneNumberValidator
@@ -39,8 +48,8 @@ fun PhoneTextField(
     error: String? = null,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
-    contentType: ContentType = ContentType.PhoneNumber
 ) {
+
     val context = LocalContext.current
     var showBottomSheet by remember { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState()
@@ -98,6 +107,9 @@ fun PhoneTextField(
             keyboardActions = keyboardActions,
             singleLine = true,
             modifier = modifier.fillMaxWidth()
+                .semantics {
+                contentType = ContentType.PhoneNumber
+            }
         )
     }
 

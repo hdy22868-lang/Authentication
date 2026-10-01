@@ -1,6 +1,5 @@
 package com.example.authentication.auth.presentation.reset_password.ui
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -75,6 +74,7 @@ fun ResetPasswordScreen(
                     onValueChange = { onAction(ResetPasswordAction.OnPasswordChanged(it)) },
                     placeholder = stringResource(R.string.new_password),
                     leadingIcon = Icons.Default.Lock,
+                    modifier = Modifier.fillMaxWidth(),
                     trailingIcon = {
                         val image =
                             if (newPasswordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff
@@ -90,7 +90,6 @@ fun ResetPasswordScreen(
                     keyboardActions = KeyboardActions(
                         onNext = { focusManager.moveFocus(FocusDirection.Down) }
                     ),
-                    modifier = Modifier.fillMaxWidth()
                 )
 
                 AuthTextField(
@@ -98,6 +97,7 @@ fun ResetPasswordScreen(
                     onValueChange = { onAction(ResetPasswordAction.OnConfirmedPasswordChanged(it)) },
                     placeholder = stringResource(R.string.confirm_password),
                     leadingIcon = Icons.Default.Lock,
+                    modifier = Modifier.fillMaxWidth(),
                     trailingIcon = {
                         val image =
                             if (confirmPasswordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff
@@ -116,7 +116,6 @@ fun ResetPasswordScreen(
                             onAction(ResetPasswordAction.OnSubmitClick)
                         }
                     ),
-                    modifier = Modifier.fillMaxWidth()
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
