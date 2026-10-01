@@ -18,7 +18,6 @@ import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
-import kotlin.coroutines.EmptyCoroutineContext.get
 
 val fakeAuthModule = module {
 
@@ -33,7 +32,7 @@ val fakeAuthModule = module {
     factoryOf(::ResetPasswordUseCase)
     factoryOf(::LogoutUseCase)
 
-    viewModel { LoginViewModel(get()) }
+    viewModel { LoginViewModel(get(), get(), get()) }
     viewModel { SignUpViewModel(get()) }
     viewModel { VerifyViewModel(get(), get(), get()) }
     viewModel { ResetPasswordViewModel(get(), get()) }

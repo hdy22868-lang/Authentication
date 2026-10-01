@@ -33,6 +33,7 @@ class AuthRepositoryImpl(
                     name = name
                 )
             )
+            Unit
         }
     }
 

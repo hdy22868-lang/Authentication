@@ -11,8 +11,10 @@ sealed interface AuthRoute {
     data object SignUp : AuthRoute
 
     @Serializable
-    data class Verify(val phoneNumber: String) : AuthRoute
+    data class Verify(val phoneNumber: String, val isResetFlow: Boolean = false) : AuthRoute
 
     @Serializable
     data class ResetPassword(val phoneNumber: String) : AuthRoute
+    @Serializable
+    data object Home : AuthRoute
 }

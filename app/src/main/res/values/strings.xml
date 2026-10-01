@@ -18,4 +18,8 @@
     <string name="sign_up">Sign Up</string>
     <string name="select_country">Select Country</string>
     <string name="select_country_desc">Select Country</string>
+    <string name="error_invalid_phone">Invalid phone number</string>
+    <string name="account_not_found_title">Login failed</string>
+    <string name="account_not_found_message">The phone number or password is incorrect. Do you want to create a new account?</string>
+    <string name="cancel">Cancel</string>
 </resources>

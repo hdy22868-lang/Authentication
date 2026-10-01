@@ -9,7 +9,7 @@ import com.example.authentication.core.domain.Result
 class FakeAuthRepositoryImpl : AuthRepository {
 
     private val usersMemory = mutableMapOf<String, String>(
-        "07829155438" to "ha7hu5_"
+        "+9647829155438" to "12345"
     )
 
     override suspend fun signUp(

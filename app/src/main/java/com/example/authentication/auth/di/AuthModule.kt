@@ -32,7 +32,7 @@ val authModule = module {
     factoryOf(::ResetPasswordUseCase)
     factoryOf(::LogoutUseCase)
 
-    viewModel { LoginViewModel(get()) }
+    viewModel { LoginViewModel(get(), get(), get()) }
     viewModel { SignUpViewModel(get()) }
     viewModel { VerifyViewModel(get(), get(), get()) }
     viewModel { ResetPasswordViewModel(get(), get()) }

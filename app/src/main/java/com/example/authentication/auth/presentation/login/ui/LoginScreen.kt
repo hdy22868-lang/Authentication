@@ -20,6 +20,7 @@ import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalAutofillManager
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -44,6 +45,7 @@ fun LoginScreen(
     onForgetPasswordClick: () -> Unit,
     modifier: Modifier = Modifier,
 ){
+    val context = LocalContext.current
     val focusManager = LocalFocusManager.current
     val scrollState = rememberScrollState()
     val autofillManager = LocalAutofillManager.current
@@ -88,7 +90,7 @@ fun LoginScreen(
                 onCountryCodeSelected = { country ->
                     onAction(LoginAction.OnCountryCodeChanged(country.callingCode, country.isoCode))
                 },
-                error = state.error,
+                error = state.error?.asString(context),
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Phone,
                     imeAction = ImeAction.Next
@@ -99,7 +101,7 @@ fun LoginScreen(
                 contentType = ContentType.PhoneNumber
             )
 
-            // حقل كلمة المرور باستخدام الـ AuthTextField
+
             AuthTextField(
                 value = state.password,
                 onValueChange = { onAction(LoginAction.OnPasswordChanged(it)) },

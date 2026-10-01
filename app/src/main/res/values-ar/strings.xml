@@ -18,4 +18,8 @@
     <string name="sign_up">إنشاء حساب</string>
     <string name="select_country">اختر الدولة</string>
     <string name="select_country_desc">اختر الدولة</string>
+    <string name="error_invalid_phone">رقم الهاتف غير صحيح</string>
+    <string name="account_not_found_title">فشل تسجيل الدخول</string>
+    <string name="account_not_found_message">رقم الهاتف أو كلمة المرور غير صحيحة. هل تريدين إنشاء حساب جديد؟</string>
+    <string name="cancel">إلغاء</string>
 </resources>
