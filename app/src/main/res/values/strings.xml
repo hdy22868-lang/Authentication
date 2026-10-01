@@ -21,5 +21,24 @@
     <string name="error_invalid_phone">Invalid phone number</string>
     <string name="account_not_found_title">Login failed</string>
     <string name="account_not_found_message">The phone number or password is incorrect. Do you want to create a new account?</string>
+    <string name="already_have_account">Already have an account? </string>
+    <string name="full_name">Full Name</string>
+    <string name="account_exists_title">Account Already Exists</string>
+    <string name="account_exists_message">The phone number you entered is already registered. Please sign in instead of creating a new account.</string>
+    <string name="go_to_login">Go to Login</string>
     <string name="cancel">Cancel</string>
+    <string name="register_title">Register</string>
+    <string name="register_subtitle">Please register to create your account.</string>
+    <string name="verify_title">Verification</string>
+    <string name="verify_subtitle">Enter the verification code sent to %s</string>
+    <string name="verify">Verify</string>
+    <string name="resend_code">Resend Code</string>
+    <string name="resend_code_in">Resend in 00:%02d</string>
+    <string name="reset_password_title">Reset Password</string>
+    <string name="reset_password_subtitle">Please enter your new password.</string>
+    <string name="new_password">New Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="update_password">Update Password</string>
+    <string name="welcome">Welcome</string>
+    <string name="welcome_subtitle">Sign in or create an account to continue.</string>
 </resources>

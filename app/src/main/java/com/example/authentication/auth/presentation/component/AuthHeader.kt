@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 fun AuthHeader(
     titleRes: Int,
     subtitleRes: Int,
-    imageRes: Int,
+    imageRes: Int?=null,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -25,13 +25,15 @@ fun AuthHeader(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Image(
-            painter = painterResource(id = imageRes),
-            contentDescription = null,
-            modifier = Modifier
-                .size(160.dp)
-                .padding(top = 16.dp)
-        )
+        if (imageRes != null) {
+            Image(
+                painter = painterResource(id = imageRes),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(160.dp)
+                    .padding(top = 16.dp)
+            )
+        }
 
         Column(
             modifier = Modifier.fillMaxWidth(),

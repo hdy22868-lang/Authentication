@@ -1,4 +1,4 @@
-package com.example.authentication.auth.presentation.login.ui
+package com.example.authentication.auth.presentation.reset_password.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -15,11 +15,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.autofill.ContentType
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalAutofillManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
@@ -31,40 +29,31 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.example.authentication.R
 import com.example.authentication.auth.presentation.component.AuthBackground
-import com.example.authentication.auth.presentation.component.AuthFooter
 import com.example.authentication.auth.presentation.component.AuthHeader
 import com.example.authentication.auth.presentation.component.AuthTextField
-import com.example.authentication.auth.presentation.component.PhoneTextField
-import com.example.authentication.auth.presentation.login.logic.LoginAction
-import com.example.authentication.auth.presentation.login.logic.LoginState
+import com.example.authentication.auth.presentation.reset_password.logic.ResetPasswordAction
+import com.example.authentication.auth.presentation.reset_password.logic.ResetPasswordState
 
 @Composable
-fun LoginScreen(
-    state: LoginState,
-    onAction: (LoginAction) -> Unit,
-    onSignUpClick: () -> Unit,
-    onForgetPasswordClick: () -> Unit,
-    modifier: Modifier = Modifier,
-){
-    val context = LocalContext.current
+fun ResetPasswordScreen(
+    state: ResetPasswordState,
+    onAction: (ResetPasswordAction) -> Unit,
+    modifier: Modifier = Modifier
+) {
     val focusManager = LocalFocusManager.current
     val scrollState = rememberScrollState()
-    val autofillManager = LocalAutofillManager.current
-    var passwordVisible by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+
+    var newPasswordVisible by remember { mutableStateOf(false) }
+    var confirmPasswordVisible by remember { mutableStateOf(false) }
+
     AuthBackground {
         Scaffold(
             modifier = modifier
                 .pointerInput(Unit) {
                     detectTapGestures(onTap = { focusManager.clearFocus() })
                 },
-            containerColor = Color.Transparent,
-            bottomBar = {
-                AuthFooter(
-                    promptText = stringResource(R.string.don_t_have_an_account),
-                    actionText = stringResource(R.string.sign_up),
-                    onActionClick = onSignUpClick
-                )
-            }
+            containerColor = Color.Transparent
         ) { innerPadding ->
             Column(
                 modifier = Modifier
@@ -75,73 +64,69 @@ fun LoginScreen(
                     .padding(24.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
+
                 AuthHeader(
-                    titleRes = R.string.login_title,
-                    subtitleRes = R.string.login_subtitle,
-                    imageRes = R.drawable.login
+                    titleRes = R.string.reset_password_title,
+                    subtitleRes = R.string.reset_password_subtitle,
                 )
 
-                PhoneTextField(
-                    label = stringResource(R.string.phone_number),
-                    placeholder = stringResource(R.string.enter_phone_number),
-                    value = state.phoneNumber,
-                    countryCode = state.countryCode,
-                    onValueChange = { onAction(LoginAction.OnPhoneNumberChanged(it)) },
-                    onCountryCodeSelected = { country ->
-                        onAction(
-                            LoginAction.OnCountryCodeChanged(
-                                country.callingCode,
-                                country.isoCode
-                            )
-                        )
+                AuthTextField(
+                    value = state.password,
+                    onValueChange = { onAction(ResetPasswordAction.OnPasswordChanged(it)) },
+                    placeholder = stringResource(R.string.new_password),
+                    leadingIcon = Icons.Default.Lock,
+                    trailingIcon = {
+                        val image =
+                            if (newPasswordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff
+                        IconButton(onClick = { newPasswordVisible = !newPasswordVisible }) {
+                            Icon(imageVector = image, contentDescription = null, tint = Color.Gray)
+                        }
                     },
-                    error = state.phoneError?.asString(context),
+                    visualTransformation = if (newPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                     keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Phone,
+                        keyboardType = KeyboardType.Password,
                         imeAction = ImeAction.Next
                     ),
                     keyboardActions = KeyboardActions(
                         onNext = { focusManager.moveFocus(FocusDirection.Down) }
                     ),
-                    contentType = ContentType.PhoneNumber
-                )
-
-
-                AuthTextField(
-                    value = state.password,
-                    onValueChange = { onAction(LoginAction.OnPasswordChanged(it)) },
-                    placeholder = stringResource(R.string.enter_your_password),
-                    leadingIcon = Icons.Default.Lock,
-                    trailingIcon = {
-                        val image =
-                            if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff
-                        IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                            Icon(imageVector = image, contentDescription = null, tint = Color.Gray)
-                        }
-                    },
-                    visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                     modifier = Modifier.fillMaxWidth()
                 )
 
-                Box(
-                    modifier = Modifier.fillMaxWidth(),
-                    contentAlignment = Alignment.CenterEnd
-                ) {
-                    TextButton(onClick = onForgetPasswordClick) {
-                        Text(
-                            text = stringResource(R.string.forget_password),
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-                    }
-                }
+                AuthTextField(
+                    value = state.confirmedPassword,
+                    onValueChange = { onAction(ResetPasswordAction.OnConfirmedPasswordChanged(it)) },
+                    placeholder = stringResource(R.string.confirm_password),
+                    leadingIcon = Icons.Default.Lock,
+                    trailingIcon = {
+                        val image =
+                            if (confirmPasswordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff
+                        IconButton(onClick = { confirmPasswordVisible = !confirmPasswordVisible }) {
+                            Icon(imageVector = image, contentDescription = null, tint = Color.Gray)
+                        }
+                    },
+                    visualTransformation = if (confirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Password,
+                        imeAction = ImeAction.Done
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            focusManager.clearFocus()
+                            onAction(ResetPasswordAction.OnSubmitClick)
+                        }
+                    ),
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
 
                 Button(
                     onClick = {
                         focusManager.clearFocus()
-                        autofillManager?.commit()
-                        onAction(LoginAction.OnLoginClick)
+                        onAction(ResetPasswordAction.OnSubmitClick)
                     },
-                    enabled = !state.isLoading,
+                    enabled = !state.isLoading && state.password.isNotBlank() && state.confirmedPassword.isNotBlank(),
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(50.dp)
@@ -154,31 +139,22 @@ fun LoginScreen(
                         )
                     } else {
                         Text(
-                            text = stringResource(R.string.sign_in),
+                            text = stringResource(R.string.update_password),
                             style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
                         )
                     }
+                }
+
+
+                if (state.error != null) {
+                    Text(
+                        text = state.error.asString(context),
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                    )
                 }
             }
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

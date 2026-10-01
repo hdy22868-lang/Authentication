@@ -21,5 +21,23 @@
     <string name="error_invalid_phone">رقم الهاتف غير صحيح</string>
     <string name="account_not_found_title">فشل تسجيل الدخول</string>
     <string name="account_not_found_message">رقم الهاتف أو كلمة المرور غير صحيحة. هل تريدين إنشاء حساب جديد؟</string>
+    <string name="already_have_account">لديك حساب بالفعل؟ </string>
+    <string name="full_name">الاسم الكامل</string>
+    <string name="account_exists_title">الحساب موجود مسبقاً</string>
+    <string name="account_exists_message">رقم الهاتف الذي أدخلته مسجل لدينا بالفعل. يرجى تسجيل الدخول بدلاً من إنشاء حساب جديد.</string>
+    <string name="go_to_login">الذهاب لتسجيل الدخول</string>
     <string name="cancel">إلغاء</string>
+    <string name="register_title">إنشاء حساب</string>
+    <string name="register_subtitle">يرجى التسجيل لإنشاء حسابك.</string><string name="verify_title">التحقق من الرقم</string>
+    <string name="verify_subtitle">أدخل رمز التحقق المرسل إلى %s</string>
+    <string name="verify">تأكيد</string>
+    <string name="resend_code">إعادة إرسال الرمز</string>
+    <string name="resend_code_in">إعادة الإرسال بعد 00:%02d</string>
+    <string name="reset_password_title">إعادة تعيين كلمة المرور</string>
+    <string name="reset_password_subtitle">يرجى إدخال كلمة المرور الجديدة.</string>
+    <string name="new_password">كلمة المرور الجديدة</string>
+    <string name="confirm_password">تأكيد كلمة المرور</string>
+    <string name="update_password">تحديث كلمة المرور</string>
+    <string name="welcome">مرحباً</string>
+    <string name="welcome_subtitle">قم بتسجيل الدخول أو إنشاء حساب للمتابعة.</string>
 </resources>

@@ -6,5 +6,7 @@ data class VerifyState(
     val phoneNumber: String = "",
     val otpCode: String = "",
     val isLoading: Boolean = false,
-    val error: UiText? = null
+    val error: UiText? = null,
+    val resendTimer: Int = 60,
+    val isResendEnabled: Boolean = false
 )

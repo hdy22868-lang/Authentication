@@ -1,48 +1,109 @@
 package com.example.authentication.auth.presentation.navigation
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.authentication.auth.presentation.login.ui.LoginScreenRoot
+import androidx.navigation.toRoute
 import org.koin.androidx.compose.koinViewModel
+import com.example.authentication.auth.presentation.component.AuthBackground
+import com.example.authentication.auth.presentation.login.ui.LoginScreenRoot
+import com.example.authentication.auth.presentation.login.logic.LoginViewModel
+import com.example.authentication.auth.presentation.signup.ui.SignUpScreenRoot
+import com.example.authentication.auth.presentation.signup.logic.SignUpViewModel
+import com.example.authentication.auth.presentation.verify_code.ui.VerifyScreenRoot
+import com.example.authentication.auth.presentation.verify_code.logic.VerifyViewModel
+import com.example.authentication.auth.presentation.reset_password.ui.ResetPasswordScreenRoot
+import com.example.authentication.auth.presentation.reset_password.logic.ResetPasswordViewModel
+import com.example.authentication.auth.presentation.welcome.ui.WelcomeScreen
+import com.example.authentication.core.component.navigateAndClearSafe
+import com.example.authentication.core.component.navigateSafe
 
 @Composable
 fun AuthNavGraph(navController: NavHostController) {
-    NavHost(
-        navController = navController,
-        startDestination = AuthRoute.Login
-    ) {
-        composable<AuthRoute.Login> {
-            LoginScreenRoot(
-                viewModel = koinViewModel(),
-                onNavigateToSignUp = { navController.navigate(AuthRoute.SignUp) },
-                onNavigateToVerify = { phone ->
-                    navController.navigate(AuthRoute.Verify(phone, isResetFlow = true))
-                },
-                onLoginSuccess = {
-                    navController.navigate(AuthRoute.Home) {
-                        popUpTo(AuthRoute.Login) { inclusive = true }
+    AuthBackground {
+        NavHost(
+            navController = navController,
+            startDestination = AuthRoute.Welcome
+        ) {
+
+            composable<AuthRoute.Welcome> {
+                WelcomeScreen(
+                    onSignUpClick = { navController.navigateSafe(AuthRoute.SignUp) },
+                    onSignInClick = { navController.navigateSafe(AuthRoute.Login) },
+                )
+            }
+
+            composable<AuthRoute.Login> {
+                val viewModel = koinViewModel<LoginViewModel>()
+                LoginScreenRoot(
+                    viewModel = viewModel,
+                    onLoginSuccess = {
+
+                        navController.navigateAndClearSafe<AuthRoute.Welcome>(
+                            route = AuthRoute.Home
+                        )
+                    },
+                    onNavigateToSignUp = { navController.navigateSafe(AuthRoute.SignUp) },
+                    onNavigateToVerify = {navController.navigateSafe(AuthRoute.Verify)}
+                )
+            }
+
+            composable<AuthRoute.SignUp> {
+                val viewModel = koinViewModel<SignUpViewModel>()
+                SignUpScreenRoot(
+                    viewModel = viewModel,
+                    onNavigateToLogin = {
+                        navController.navigateAndClearSafe<AuthRoute.SignUp>(
+                            route = AuthRoute.Login
+                        )
+                    },
+                    onNavigateToOtp = { phone ->
+                        navController.navigateSafe(
+                            AuthRoute.Verify(phoneNumber = phone, isResetFlow = false)
+                        )
                     }
-                }
-            )
+                )
+            }
+
+            composable<AuthRoute.Verify> { backStackEntry ->
+                val args = backStackEntry.toRoute<AuthRoute.Verify>()
+                val viewModel = koinViewModel<VerifyViewModel>()
+
+                VerifyScreenRoot(
+                    viewModel = viewModel,
+                    onNavigateToHome = {
+                        if (args.isResetFlow) {
+                            navController.navigateAndClearSafe<AuthRoute.Verify>(
+                                route = AuthRoute.ResetPassword(phoneNumber = args.phoneNumber)
+                            )
+                        } else {
+                            navController.navigateAndClearSafe<AuthRoute.Welcome>(
+                                route = AuthRoute.Home
+                            )
+                        }
+                    }
+                )
+            }
+
+            composable<AuthRoute.ResetPassword> { backStackEntry ->
+                val args = backStackEntry.toRoute<AuthRoute.ResetPassword>()
+                val viewModel = koinViewModel<ResetPasswordViewModel>()
+
+                ResetPasswordScreenRoot(
+                    viewModel = viewModel,
+                    onNavigateToHome = {
+                        navController.navigateAndClearSafe<AuthRoute.Welcome>(
+                            route = AuthRoute.Home
+                        )
+                    }
+                )
+            }
+
+
+            composable<AuthRoute.Home> {
+                ("TODO")
+            }
         }
-
-        composable<AuthRoute.SignUp> { Placeholder("SignUp") }
-        composable<AuthRoute.Verify> { Placeholder("Verify") }
-        composable<AuthRoute.ResetPassword> { Placeholder("ResetPassword") }
-        composable<AuthRoute.Home> { Placeholder("Home") }
-    }
-}
-
-@Composable
-private fun Placeholder(name: String) {
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Text(name)
     }
 }

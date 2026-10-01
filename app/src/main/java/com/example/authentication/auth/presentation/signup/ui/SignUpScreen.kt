@@ -1,4 +1,4 @@
-package com.example.authentication.auth.presentation.login.ui
+package com.example.authentication.auth.presentation.signup.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -9,17 +9,16 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.autofill.ContentType
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalAutofillManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
@@ -35,22 +34,21 @@ import com.example.authentication.auth.presentation.component.AuthFooter
 import com.example.authentication.auth.presentation.component.AuthHeader
 import com.example.authentication.auth.presentation.component.AuthTextField
 import com.example.authentication.auth.presentation.component.PhoneTextField
-import com.example.authentication.auth.presentation.login.logic.LoginAction
-import com.example.authentication.auth.presentation.login.logic.LoginState
+import com.example.authentication.auth.presentation.signup.logic.SignUpAction
+import com.example.authentication.auth.presentation.signup.logic.SignUpState
 
 @Composable
-fun LoginScreen(
-    state: LoginState,
-    onAction: (LoginAction) -> Unit,
-    onSignUpClick: () -> Unit,
-    onForgetPasswordClick: () -> Unit,
-    modifier: Modifier = Modifier,
-){
-    val context = LocalContext.current
+fun SignUpScreen(
+    state: SignUpState,
+    onAction: (SignUpAction) -> Unit,
+    onLoginClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     val focusManager = LocalFocusManager.current
     val scrollState = rememberScrollState()
-    val autofillManager = LocalAutofillManager.current
     var passwordVisible by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+
     AuthBackground {
         Scaffold(
             modifier = modifier
@@ -60,9 +58,9 @@ fun LoginScreen(
             containerColor = Color.Transparent,
             bottomBar = {
                 AuthFooter(
-                    promptText = stringResource(R.string.don_t_have_an_account),
-                    actionText = stringResource(R.string.sign_up),
-                    onActionClick = onSignUpClick
+                    promptText = stringResource(R.string.already_have_account),
+                    actionText = stringResource(R.string.sign_in),
+                    onActionClick = onLoginClick
                 )
             }
         ) { innerPadding ->
@@ -76,9 +74,24 @@ fun LoginScreen(
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 AuthHeader(
-                    titleRes = R.string.login_title,
-                    subtitleRes = R.string.login_subtitle,
-                    imageRes = R.drawable.login
+                    titleRes = R.string.register_title,
+                    subtitleRes = R.string.register_subtitle,
+                    imageRes = R.drawable.register
+                )
+
+                AuthTextField(
+                    value = state.fullName,
+                    onValueChange = { onAction(SignUpAction.OnFullNameChanged(it)) },
+                    placeholder = stringResource(R.string.full_name),
+                    leadingIcon = Icons.Default.Person,
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.Next
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onNext = { focusManager.moveFocus(FocusDirection.Down) }
+                    ),
+                    modifier = Modifier.fillMaxWidth()
                 )
 
                 PhoneTextField(
@@ -86,10 +99,10 @@ fun LoginScreen(
                     placeholder = stringResource(R.string.enter_phone_number),
                     value = state.phoneNumber,
                     countryCode = state.countryCode,
-                    onValueChange = { onAction(LoginAction.OnPhoneNumberChanged(it)) },
+                    onValueChange = { onAction(SignUpAction.OnPhoneNumberChanged(it)) },
                     onCountryCodeSelected = { country ->
                         onAction(
-                            LoginAction.OnCountryCodeChanged(
+                            SignUpAction.OnCountryCodeChanged(
                                 country.callingCode,
                                 country.isoCode
                             )
@@ -106,10 +119,9 @@ fun LoginScreen(
                     contentType = ContentType.PhoneNumber
                 )
 
-
                 AuthTextField(
                     value = state.password,
-                    onValueChange = { onAction(LoginAction.OnPasswordChanged(it)) },
+                    onValueChange = { onAction(SignUpAction.OnPasswordChanged(it)) },
                     placeholder = stringResource(R.string.enter_your_password),
                     leadingIcon = Icons.Default.Lock,
                     trailingIcon = {
@@ -120,26 +132,25 @@ fun LoginScreen(
                         }
                     },
                     visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Password,
+                        imeAction = ImeAction.Done
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            focusManager.clearFocus()
+                            onAction(SignUpAction.OnSignUpClick)
+                        }
+                    ),
                     modifier = Modifier.fillMaxWidth()
                 )
 
-                Box(
-                    modifier = Modifier.fillMaxWidth(),
-                    contentAlignment = Alignment.CenterEnd
-                ) {
-                    TextButton(onClick = onForgetPasswordClick) {
-                        Text(
-                            text = stringResource(R.string.forget_password),
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-                    }
-                }
+                Spacer(modifier = Modifier.height(8.dp))
 
                 Button(
                     onClick = {
                         focusManager.clearFocus()
-                        autofillManager?.commit()
-                        onAction(LoginAction.OnLoginClick)
+                        onAction(SignUpAction.OnSignUpClick)
                     },
                     enabled = !state.isLoading,
                     modifier = Modifier
@@ -154,7 +165,7 @@ fun LoginScreen(
                         )
                     } else {
                         Text(
-                            text = stringResource(R.string.sign_in),
+                            text = stringResource(R.string.sign_up),
                             style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
                         )
                     }
@@ -163,22 +174,3 @@ fun LoginScreen(
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

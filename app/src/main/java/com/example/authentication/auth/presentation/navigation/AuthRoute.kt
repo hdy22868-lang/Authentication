@@ -17,4 +17,6 @@ sealed interface AuthRoute {
     data class ResetPassword(val phoneNumber: String) : AuthRoute
     @Serializable
     data object Home : AuthRoute
+    @Serializable
+    data object Welcome : AuthRoute
 }

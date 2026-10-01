@@ -24,29 +24,32 @@ class SignUpViewModel(
 
     fun onAction(action: SignUpAction) {
         when (action) {
-            is SignUpAction.OnNameChanged -> {
-                _state.update { it.copy(name = action.name) }
+            is SignUpAction.OnFullNameChanged -> {
+                _state.update { it.copy(fullName = action.name) }
             }
             is SignUpAction.OnPhoneNumberChanged -> {
-                _state.update { it.copy(phoneNumber = action.phoneNumber) }
+                _state.update { it.copy(phoneNumber = action.number) }
             }
             is SignUpAction.OnPasswordChanged -> {
-                _state.update { it.copy(password = action.password) }
+                _state.update { it.copy(password = action.pass) }
             }
             is SignUpAction.OnSignUpClick -> {
                 signUp()
+            }
+            is SignUpAction.OnCountryCodeChanged -> {
+                _state.update { it.copy(countryCode = action.callingCode) }
             }
         }
     }
 
     private fun signUp() {
         viewModelScope.launch {
-            _state.update { it.copy(isLoading = true, error = null) }
+            _state.update { it.copy(isLoading = true, phoneNumber ="") }
 
             val result = signUpUseCase(
                 phone = _state.value.phoneNumber,
                 password = _state.value.password,
-                name = _state.value.name
+                name = _state.value.fullName
             )
 
             _state.update { it.copy(isLoading = false) }
@@ -56,7 +59,7 @@ class SignUpViewModel(
                     _uiEvent.send(SignUpUiEvent.NavigateToVerify(_state.value.phoneNumber))
                 }
                 is Result.Error -> {
-                    _state.update { it.copy(error = result.error.toUiText()) }
+                    _state.update { it.copy(phoneError = result.error.toUiText()) }
                 }
             }
         }

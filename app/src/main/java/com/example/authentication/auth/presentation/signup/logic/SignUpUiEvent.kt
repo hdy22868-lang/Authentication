@@ -4,5 +4,6 @@ import com.example.authentication.core.component.localization.UiText
 
 sealed interface SignUpUiEvent{
     data class NavigateToVerify(val phoneNumber: String) : SignUpUiEvent
+    object ShowUserAlreadyExistsDialog : SignUpUiEvent
     data class ShowToast(val message: UiText) : SignUpUiEvent
 }
