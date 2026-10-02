@@ -1,9 +1,11 @@
 package com.example.authentication.app
 
 import android.app.Application
+import com.example.authentication.BuildConfig
 import com.example.authentication.auth.di.fakeAuthModule
 import com.example.authentication.auth.di.authModule
 import com.example.authentication.core.di.coreModule
+import com.example.authentication.core.di.networkModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
@@ -18,8 +20,7 @@ class MyApp : Application() {
             androidLogger(Level.ERROR)
             androidContext(this@MyApp)
 
-            // نضع الموديول هنا (نستطيع التبديل بين fakeAuthModule و authModule لاحقاً بكل سهولة)
-            modules(coreModule,fakeAuthModule,appModule)
+            modules(coreModule, networkModule, appModule, if (BuildConfig.USE_FAKE) fakeAuthModule else authModule)
         }
     }
 }

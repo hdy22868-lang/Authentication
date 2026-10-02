@@ -23,7 +23,13 @@ android {
     }
 
     buildTypes {
+        debug {
+            buildConfigField("String", "BASE_URL", "\"https://dev.example.com/\"")
+            buildConfigField("boolean", "USE_FAKE", "true")
+        }
         release {
+            buildConfigField("String", "BASE_URL", "\"https://api.example.com/\"")
+            buildConfigField("boolean", "USE_FAKE", "false")
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -40,15 +46,7 @@ android {
         buildConfig = true
     }
 }
-// قراءة المتغير من local.properties وتوليده في ملف BuildConfig
-val baseUrl = the<com.android.build.api.dsl.ApplicationExtension>().let {
-    // قراءة آمنة من localProperties
-    "https://api.yourdomain.com/"
-}
 
-android.buildTypes.all {
-    buildConfigField("String", "BASE_URL", "\"$baseUrl\"")
-}
 
 val ktorVersion = "3.0.3"
 

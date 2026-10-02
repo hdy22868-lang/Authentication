@@ -3,6 +3,7 @@ package com.example.authentication.auth.presentation.verify_code.logic
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.authentication.R
 import com.example.authentication.auth.domain.use_cases.ResendOtpUseCase
 import com.example.authentication.auth.domain.use_cases.VerifyUseCase
 import com.example.authentication.core.component.localization.UiText
@@ -79,7 +80,7 @@ class VerifyViewModel(
 
             when (result) {
                 is Result.Success -> {
-                    _uiEvent.send(VerifyUiEvent.ShowToast(UiText.DynamicString("تم إعادة إرسال الرمز")))
+                    _uiEvent.send(VerifyUiEvent.ShowToast(UiText.StringResource(R.string.otp_resent)))
                 }
                 is Result.Error -> {
                     _state.update { it.copy(error = result.error.toUiText()) }

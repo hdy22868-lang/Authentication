@@ -2,10 +2,12 @@ package com.example.authentication.auth.presentation.signup.logic
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.authentication.R
 import com.example.authentication.auth.domain.use_cases.SignUpUseCase
 import com.example.authentication.core.component.localization.UiText
 import com.example.authentication.core.component.localization.toUiText
 import com.example.authentication.core.component.phoneNumber.PhoneNumberValidator
+import com.example.authentication.core.domain.DataError
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,67 +20,53 @@ import kotlinx.coroutines.launch
 class SignUpViewModel(
     private val signUpUseCase: SignUpUseCase,
     private val phoneNumberValidator: PhoneNumberValidator
-): ViewModel(){
+) : ViewModel() {
 
     private val _state = MutableStateFlow(SignUpState())
     val state: StateFlow<SignUpState> = _state.asStateFlow()
 
-    private val _uiEvent = Channel<SignUpUiEvent>()
+    private val _uiEvent = Channel<SignUpUiEvent>(Channel.BUFFERED)
     val uiEvent = _uiEvent.receiveAsFlow()
 
     fun onAction(action: SignUpAction) {
         when (action) {
-            is SignUpAction.OnFullNameChanged -> {
-                _state.update { it.copy(fullName = action.name) }
+            is SignUpAction.OnFullNameChanged -> _state.update { it.copy(fullName = action.name) }
+            is SignUpAction.OnPhoneNumberChanged -> _state.update { it.copy(phoneNumber = action.number, phoneError = null) }
+            is SignUpAction.OnPasswordChanged -> _state.update { it.copy(password = action.pass) }
+            is SignUpAction.OnCountryCodeChanged -> _state.update {
+                it.copy(countryCode = action.callingCode, isoCode = action.isoCode, phoneError = null)
             }
-            is SignUpAction.OnPhoneNumberChanged -> {
-                _state.update { it.copy(phoneNumber = action.number) }
-            }
-            is SignUpAction.OnPasswordChanged -> {
-                _state.update { it.copy(password = action.pass) }
-            }
-            is SignUpAction.OnSignUpClick -> {
-                signUp()
-            }
-            is SignUpAction.OnCountryCodeChanged -> {
-                _state.update { it.copy(
-                    countryCode = action.callingCode,
-                    isoCode = action.isoCode) }
-            }
+            is SignUpAction.OnSignUpClick -> signUp()
         }
-    }
-
-    private fun validatedPhone(): String? {
-        val current = _state.value
-        val e164 = phoneNumberValidator.formatToE164(current.phoneNumber, current.isoCode)
-        if (e164 == null) {
-            _state.update {
-                it.copy(phoneError = UiText.StringResource(com.example.authentication.R.string.error_invalid_phone))
-            }
-        }
-        return e164
     }
 
     private fun signUp() {
-        val validPhone = validatedPhone() ?: return
+        val current = _state.value
+        val phone = phoneNumberValidator.formatToE164(current.phoneNumber, current.isoCode)
+        if (phone == null) {
+            _state.update { it.copy(phoneError = UiText.StringResource(R.string.error_invalid_phone)) }
+            return
+        }
+        if (current.password.isBlank()) {
+            viewModelScope.launch {
+                _uiEvent.send(SignUpUiEvent.ShowToast(UiText.StringResource(R.string.enter_your_password)))
+            }
+            return
+        }
+
         viewModelScope.launch {
-
             _state.update { it.copy(isLoading = true) }
-
-            val result = signUpUseCase(
-                phone = validPhone,
-                password = _state.value.password,
-                name = _state.value.fullName
-            )
-
+            val result = signUpUseCase(phone = phone, password = current.password, name = current.fullName)
             _state.update { it.copy(isLoading = false) }
 
             when (result) {
-                is Result.Success -> {
-                    _uiEvent.send(SignUpUiEvent.NavigateToVerify(validPhone))
-                }
+                is Result.Success -> _uiEvent.send(SignUpUiEvent.NavigateToVerify(phone))
                 is Result.Error -> {
-                    _state.update { it.copy(phoneError = result.error.toUiText()) }
+                    if (result.error == DataError.Network.CONFLICT) {
+                        _uiEvent.send(SignUpUiEvent.ShowUserAlreadyExistsDialog)
+                    } else {
+                        _uiEvent.send(SignUpUiEvent.ShowToast(result.error.toUiText()))
+                    }
                 }
             }
         }

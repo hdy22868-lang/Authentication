@@ -1,12 +1,16 @@
 package com.example.authentication.core.data.networking
 
+import com.example.authentication.BuildConfig
 import com.example.authentication.auth.domain.model.AuthTokens
 import io.ktor.client.HttpClient
+import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.auth.Auth
 import io.ktor.client.plugins.auth.providers.bearer
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logging
+import io.ktor.http.encodedPath
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 
@@ -22,6 +26,15 @@ object HttpClientFactory {
                 })
             }
 
+            install(HttpTimeout) {
+                connectTimeoutMillis = 15_000
+                requestTimeoutMillis = 30_000
+            }
+            defaultRequest { url(BuildConfig.BASE_URL) }
+            install(Logging) {
+                level = if (BuildConfig.DEBUG) LogLevel.INFO else LogLevel.NONE
+            }
+
             // إعدادات طباعة الـ Logs لمعرفة ما يحدث في الشبكة
             install(Logging) {
                 level = LogLevel.ALL
@@ -30,6 +43,11 @@ object HttpClientFactory {
             // إعدادات المصادقة التلقائية وحقن التوكن
             install(Auth) {
                 bearer {
+                    sendWithoutRequest { request ->
+                        val path = request.url.encodedPath
+                        listOf(ApiConfig.SIGN_UP, ApiConfig.LOGIN_PASSWORD, ApiConfig.LOGIN_OTP,
+                            ApiConfig.VERIFY_OTP, ApiConfig.REFRESH).none { path.endsWith(it) }
+                    }
                     loadTokens {
                         // جلب التوكن الحالي المخزن محلياً
                         val accessToken = tokenProvider.getAccessToken()

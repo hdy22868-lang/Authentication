@@ -12,11 +12,19 @@ import com.example.authentication.auth.data.remote.dto.request.VerifyOtpRequestD
 import com.example.authentication.auth.domain.model.AuthTokens
 import com.example.authentication.auth.domain.model.User
 import com.example.authentication.auth.domain.repository.AuthRepository
+import com.example.authentication.core.data.networking.clearBearerTokens
 import com.example.authentication.core.data.networking.safeCall
 import com.example.authentication.core.domain.DataError
 import com.example.authentication.core.domain.Result
+import io.ktor.client.HttpClient
+import io.ktor.client.plugins.auth.Auth
+import io.ktor.client.plugins.auth.providers.BearerAuthProvider
+import io.ktor.client.plugins.plugin
 import kotlinx.coroutines.flow.first
+import kotlinx.serialization.SerializationException
+
 class AuthRepositoryImpl(
+    private val httpClient: HttpClient,
     private val remoteDataSource: AuthRemoteDataSource,
     private val authPreferences: AuthPreferences
 ) : AuthRepository {
@@ -46,8 +54,11 @@ class AuthRepositoryImpl(
             val response = remoteDataSource.verifyOtp(
                 VerifyOtpRequestDto(phoneNumber = phone, otpCode = otp)
             )
-            val accessToken = response.accessToken ?: ""
-            val refreshToken = response.refreshToken ?: ""
+            val accessToken = response.accessToken
+            val refreshToken = response.refreshToken
+            if (accessToken.isNullOrBlank() || refreshToken.isNullOrBlank()) {
+                throw SerializationException("Missing tokens")
+            }
             authPreferences.saveTokens(accessToken, refreshToken)
             Pair(response.toUser(), response.toAuthToken())
         }
@@ -62,8 +73,11 @@ class AuthRepositoryImpl(
                 LoginPasswordRequestDto(phoneNumber = phone, password = password)
             )
 
-            val accessToken = response.accessToken ?: ""
-            val refreshToken = response.refreshToken ?: ""
+            val accessToken = response.accessToken
+            val refreshToken = response.refreshToken
+            if (accessToken.isNullOrBlank() || refreshToken.isNullOrBlank()) {
+                throw SerializationException("Missing tokens")
+            }
             authPreferences.saveTokens(accessToken, refreshToken)
 
             Pair(response.toUser(), response.toAuthToken())
@@ -85,6 +99,7 @@ class AuthRepositoryImpl(
     override suspend fun logout(): Result<Unit, DataError> {
         return safeCall {
             authPreferences.clearTokens()
+            httpClient.clearBearerTokens()
         }
     }
 

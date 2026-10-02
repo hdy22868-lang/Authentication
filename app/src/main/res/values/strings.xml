@@ -46,4 +46,5 @@
     <string name="select_language">Select language</string>
     <string name="search_country">Search country or code</string>
     <string name="no_results">No results found</string>
+    <string name="otp_resent">Otp Is Resent</string>
 </resources>
