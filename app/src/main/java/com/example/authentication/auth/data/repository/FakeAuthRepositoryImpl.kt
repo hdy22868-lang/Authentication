@@ -11,7 +11,7 @@ class FakeAuthRepositoryImpl : AuthRepository {
 
     private var loggedIn = false
     private val usersMemory = mutableMapOf<String, String>(
-        "" to ""
+        "7829155438" to "hhhhhh"
     )
     private val otpsMemory = mutableMapOf<String, String>()
 
@@ -61,19 +61,15 @@ class FakeAuthRepositoryImpl : AuthRepository {
     }
 
     override suspend fun logInWithOtp(phone: String): Result<Unit, DataError> {
-        if (!usersMemory.containsKey(phone)) {
-            usersMemory[phone] = "12345" // باسوورد وهمي احتياطي
+        if (usersMemory.containsKey(phone)) {
+            // نفس الفكرة هنا، نولد كود في حال طلب تسجيل الدخول بالـ OTP
+            val fakeOtp = "123456"
+            otpsMemory[phone] = fakeOtp
+            Log.d("FakeOTP", "تم إرسال رمز التحقق: $fakeOtp إلى الرقم $phone")
+            return Result.Success(Unit)
+        } else {
+            return Result.Error(DataError.Network.UNAUTHORIZED)
         }
-
-        // توليد كود الـ OTP
-        val fakeOtp = "123456"
-        otpsMemory[phone] = fakeOtp
-
-        // طباعة الكود حتى تشوفه بالـ Logcat
-        Log.d("FakeOTP", "تم إرسال رمز التحقق: $fakeOtp إلى الرقم $phone")
-
-        // إرجاع نجاح حتى الـ ViewModel ينقلك لصفحة الـ OTP أو الـ Reset Password
-        return Result.Success(Unit)
     }
 
     override suspend fun resentOtp(phone: String): Result<Unit, DataError> {

@@ -21,7 +21,8 @@ object HttpClientFactory {
             // إعدادات تحويل الـ JSON
             install(ContentNegotiation) {
                 json(Json {
-                    ignoreUnknownKeys = true // لتجنب الانهيار إذا أرسل السيرفر حقولاً جديدة لا نعرفها
+                    ignoreUnknownKeys = true
+                    isLenient = true
                     prettyPrint = true
                 })
             }

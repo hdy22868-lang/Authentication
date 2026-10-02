@@ -16,8 +16,11 @@ import org.koin.dsl.module
 
 val networkModule = module {
     single { SessionManager() }
-    single(named("plain")) { HttpClient(OkHttp) { install(ContentNegotiation) { json(Json { ignoreUnknownKeys = true }) }; defaultRequest { url(
-        BuildConfig.BASE_URL) } } }
+    single(named("plain"))
+    { HttpClient(OkHttp)
+    { install(ContentNegotiation)
+    { json(Json { ignoreUnknownKeys = true;
+        isLenient = true }) }; defaultRequest { url(BuildConfig.BASE_URL) } } }
     single<TokenProvider> { AuthTokenProvider(get(), get(named("plain")), get()) }
     single { HttpClientFactory.create(get()) }
 }
