@@ -8,6 +8,7 @@ import com.example.authentication.auth.domain.use_cases.ResendOtpUseCase
 import com.example.authentication.auth.domain.use_cases.VerifyUseCase
 import com.example.authentication.core.component.localization.UiText
 import com.example.authentication.core.component.localization.toUiText
+import com.example.authentication.core.domain.DataError
 import com.example.authentication.core.domain.Result
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
@@ -65,7 +66,12 @@ class VerifyViewModel(
                     _uiEvent.send(VerifyUiEvent.VerifySuccess)
                 }
                 is Result.Error -> {
-                    _state.update { it.copy(error = result.error.toUiText()) }
+                    val message = when (result.error) {
+                        DataError.Network.UNAUTHORIZED,
+                        DataError.Network.BAD_REQUEST -> UiText.StringResource(R.string.error_invalid_code)
+                        else -> result.error.toUiText()
+                    }
+                    _state.update { it.copy(error = message) }
                 }
             }
         }

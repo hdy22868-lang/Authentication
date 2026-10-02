@@ -11,7 +11,7 @@ class FakeAuthRepositoryImpl : AuthRepository {
 
     private var loggedIn = false
     private val usersMemory = mutableMapOf<String, String>(
-        "7829155438" to "hhhhhh"
+        "" to ""
     )
     private val otpsMemory = mutableMapOf<String, String>()
 

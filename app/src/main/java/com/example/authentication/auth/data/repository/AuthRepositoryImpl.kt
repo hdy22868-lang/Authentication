@@ -60,6 +60,7 @@ class AuthRepositoryImpl(
                 throw SerializationException("Missing tokens")
             }
             authPreferences.saveTokens(accessToken, refreshToken)
+            httpClient.clearBearerTokens()
             Pair(response.toUser(), response.toAuthToken())
         }
     }
@@ -79,7 +80,7 @@ class AuthRepositoryImpl(
                 throw SerializationException("Missing tokens")
             }
             authPreferences.saveTokens(accessToken, refreshToken)
-
+            httpClient.clearBearerTokens()
             Pair(response.toUser(), response.toAuthToken())
         }
     }

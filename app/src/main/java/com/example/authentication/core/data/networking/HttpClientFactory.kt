@@ -35,11 +35,6 @@ object HttpClientFactory {
                 level = if (BuildConfig.DEBUG) LogLevel.INFO else LogLevel.NONE
             }
 
-            // إعدادات طباعة الـ Logs لمعرفة ما يحدث في الشبكة
-            install(Logging) {
-                level = LogLevel.ALL
-            }
-
             // إعدادات المصادقة التلقائية وحقن التوكن
             install(Auth) {
                 bearer {

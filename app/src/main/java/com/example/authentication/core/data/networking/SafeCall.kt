@@ -19,6 +19,9 @@ inline fun <T> safeCall(execute: () -> T): Result<T, DataError.Network> {
                 409 -> DataError.Network.CONFLICT
                 413 -> DataError.Network.PAYLOAD_TOO_LARGE
                 429 -> DataError.Network.TOO_MANY_REQUESTS
+                400, 422 -> DataError.Network.BAD_REQUEST
+                403 -> DataError.Network.FORBIDDEN
+                404 -> DataError.Network.NOT_FOUND
                 in 500..599 -> DataError.Network.SERVER_ERROR
                 else -> DataError.Network.UNKNOWN
             }

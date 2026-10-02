@@ -84,7 +84,8 @@ class LoginViewModel(
             when (result) {
                 is Result.Success -> _uiEvent.send(LoginEvent.LoginSuccess)
                 is Result.Error -> {
-                    if (result.error == DataError.Network.UNAUTHORIZED) {
+                    if (result.error == DataError.Network.UNAUTHORIZED ||
+                        result.error == DataError.Network.NOT_FOUND) {
                         _uiEvent.send(LoginEvent.ShowAccountNotFoundDialog)
                     } else {
                         _uiEvent.send(LoginEvent.ShowToast(result.error.toUiText()))
@@ -104,7 +105,12 @@ class LoginViewModel(
 
             when (result) {
                 is Result.Success -> _uiEvent.send(LoginEvent.NavigateToVerify(phone))
-                is Result.Error -> _uiEvent.send(LoginEvent.ShowToast(result.error.toUiText()))
+                is Result.Error -> if (result.error == DataError.Network.UNAUTHORIZED ||
+                    result.error == DataError.Network.NOT_FOUND) {
+                    _uiEvent.send(LoginEvent.ShowAccountNotFoundDialog)
+                } else {
+                    _uiEvent.send(LoginEvent.ShowToast(result.error.toUiText()))
+                }
             }
         }
     }

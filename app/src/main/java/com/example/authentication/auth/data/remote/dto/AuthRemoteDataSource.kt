@@ -18,11 +18,11 @@ import io.ktor.http.contentType
 class AuthRemoteDataSource(
     private val httpClient: HttpClient
 ) {
-    suspend fun signUp(requestDto: SignUpRequestDto): AuthResponseDto{
-        return httpClient.post(ApiConfig.SIGN_UP){
+    suspend fun signUp(requestDto: SignUpRequestDto) {
+        httpClient.post(ApiConfig.SIGN_UP) {
             contentType(ContentType.Application.Json)
             setBody(requestDto)
-        }.ensureSuccess().body()
+        }.ensureSuccess()
     }
     suspend fun loginWithPassword(requestDto: LoginPasswordRequestDto): AuthResponseDto{
         return httpClient.post(ApiConfig.LOGIN_PASSWORD){

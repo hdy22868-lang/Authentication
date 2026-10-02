@@ -47,4 +47,7 @@
     <string name="search_country">Search country or code</string>
     <string name="no_results">No results found</string>
     <string name="otp_resent">Otp Is Resent</string>
+    <string name="error_invalid_code">The code you entered is incorrect.</string>
+    <string name="error_conflict">This account already exists.</string>
+    <string name="error_too_many_requests">Too many attempts. Please wait and try again.</string>
 </resources>

@@ -46,4 +46,7 @@
     <string name="search_country">ابحث عن دولة أو مقدمة</string>
     <string name="no_results">لا توجد نتائج</string>
     <string name="otp_resent">تم إعادة إرسال الرمز</string>
+    <string name="error_invalid_code">الرمز الذي أدخلته غير صحيح.</string>
+    <string name="error_conflict">هذا الحساب موجود مسبقاً.</string>
+    <string name="error_too_many_requests">محاولات كثيرة. انتظر قليلاً ثم أعد المحاولة.</string>
 </resources>

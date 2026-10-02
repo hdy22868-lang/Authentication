@@ -4,6 +4,9 @@ sealed interface DataError : RootError {
 
     // أخطاء شبكة الإنترنت (مثل عدم وجود إنترنت، انتهاء المهلة، أخطاء السيرفر)
     enum class Network : DataError {
+        NOT_FOUND,
+        FORBIDDEN,
+        BAD_REQUEST,
         REQUEST_TIMEOUT,
         UNAUTHORIZED,
         CONFLICT,
